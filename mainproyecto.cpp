@@ -54,9 +54,12 @@ public:
     obtenerContactosOrdenados(raiz, contactosOrdenados, true);
 
     for (const auto& contacto : contactosOrdenados) {
-        mostrarContacto(contacto);
+        if (contacto.frecuenciaAcceso > 0) {
+            mostrarContacto(contacto);
+        }
     }
     }
+
 
     void mostrarContacto(const Contacto& contacto) {
         std::cout << "Nombre: " << contacto.nombre << std::endl;
@@ -246,13 +249,21 @@ public:
     }
 
     void mostrarPorInicial(char inicial) {
-        std::cout << "Contactos cuyos nombres comienzan con '" << inicial << "':" << std::endl;
-        for (const auto& contacto : indiceRapido) {
-            if (contacto.nombre.front() == inicial) {
-                contactosBST.mostrarContacto(contacto);
-            }
+    std::cout << "Contactos cuyos nombres comienzan con '" << inicial << "':" << std::endl;
+
+    // Convertir la inicial a minúscula para que la comparación sea insensible a mayúsculas y minúsculas
+    inicial = std::tolower(inicial);
+
+    for (const auto& contacto : indiceRapido) {
+        // Convertir la primera letra del nombre a minúscula para la comparación
+        char primeraLetra = std::tolower(contacto.nombre.front());
+
+        if (primeraLetra == inicial) {
+            contactosBST.mostrarContacto(contacto);
         }
     }
+    }
+
     
    
 
@@ -268,9 +279,10 @@ public:
 
 
     void visualizarFrecuentes() {
-        // Implementa tu lógica para visualizar contactos frecuentes
-        std::cout << "Funcionalidad no implementada.\n";
+    std::cout << "Lista de contactos ordenada por frecuencia (frecuencia > 0):" << std::endl;
+    contactosBST.mostrarContactosPorFrecuencia();
     }
+
 
     void limpiarBuffer() {
         std::cin.clear(); // Limpia el estado del flujo
@@ -287,7 +299,7 @@ int main() {
 
     do {
         std::cout << "Seleccione una operacion:" << std::endl;
-        std::cout << "1. Agregar un contacto\n2. Eliminar un contacto\n3. Buscar un contacto\n";
+        std::cout << "1. Agregar un contacto\n2. Buscar un contacto\n3. Eliminar un contacto\n";
         std::cout << "4. Mostrar contactos ordenados\n5. Mostrar total de contactos\n";
         std::cout << "6. Mostrar contactos por inicial\n7. Realizar copia de seguridad\n";
         std::cout << "8. Visualizar contactos frecuentes\n9. Salir\n";
@@ -300,15 +312,17 @@ int main() {
                 libreta.agregarContacto();
                 break;
             case '2':
-                std::cout << "Ingrese el nombre a eliminar: ";
-                std::getline(std::cin, nombreAEliminar);
-                libreta.eliminarContacto(nombreAEliminar);
-                break;
-            case '3':
-                std::cout << "Ingrese el nombre a buscar: ";
+            std::cout << "Ingrese el nombre a buscar: ";
                 std::getline(std::cin, nombreABuscar);
                 libreta.buscarContacto(nombreABuscar);
                 break;
+                
+            case '3':
+            std::cout << "Ingrese el nombre a eliminar: ";
+                std::getline(std::cin, nombreAEliminar);
+                libreta.eliminarContacto(nombreAEliminar);
+                break;
+                
             case '4':
                 std::cout << "Lista de contactos ordenada:" << std::endl;
                 libreta.contactosBST.mostrarContactosOrdenados();
